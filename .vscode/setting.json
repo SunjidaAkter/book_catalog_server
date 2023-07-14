@@ -1,0 +1,6 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.ficAll.eslint": true,
+    "source.organizeImports": true
+  }
+}
