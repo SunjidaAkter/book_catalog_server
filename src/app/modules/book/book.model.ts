@@ -6,7 +6,7 @@ const bookSchema = new Schema<IBook, Record<string, unknown>>(
     title: { type: String, unique: true, required: true },
     author: { type: String, required: true },
     genre: { type: String, required: true },
-    publicationDate: { type: Date, required: true },
+    publicationDate: { type: String, required: true },
     reviews: { type: [String], required: false },
   },
   {

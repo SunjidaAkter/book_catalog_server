@@ -22,7 +22,7 @@ export type IBook = {
   title: string;
   author: string;
   genre: string;
-  publicationDate: Date;
+  publicationDate: string;
   reviews?: string[];
 };
 export type BookModel = Model<IBook, Record<string, unknown>>;
