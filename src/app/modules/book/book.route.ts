@@ -12,6 +12,14 @@ router.post(
   validateRequest(bookValidation.createBookZodSchema),
   bookController.createBook
 );
+router.patch(
+  '/reviews/:id',
+  validateRequest(bookValidation.updateBookZodSchema),
+  bookController.postReview
+);
+
+//getting single data route
+router.get('/reviews/:id', bookController.getReviews);
 
 //getting single data route
 router.get('/:id', bookController.getSingleBook);
@@ -28,5 +36,7 @@ router.patch(
 
 //deleting single route
 router.delete('/:id', bookController.deleteBook);
+
+//review updating route
 
 export const bookRoutes = router;

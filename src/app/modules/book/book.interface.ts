@@ -1,5 +1,10 @@
 import { Model } from 'mongoose';
 
+//type for reviews
+export type IReviews = {
+  reviews?: string[] | null;
+};
+
 //filtering type
 export type IBookFilters = {
   searchTerm?: string;
@@ -23,6 +28,6 @@ export type IBook = {
   author: string;
   genre: string;
   publicationDate: string;
-  reviews?: string[];
+  reviews?: string[] | null;
 };
 export type BookModel = Model<IBook, Record<string, unknown>>;

@@ -5,7 +5,7 @@ import httpStatus from 'http-status';
 import { paginationFields } from '../../../constants/pagination';
 import pick from '../../../shared/pick';
 import { bookService } from './book.service';
-import { IBook } from './book.interface';
+import { IBook, IReviews } from './book.interface';
 import { bookFilterableFields } from './book.constant';
 
 const createBook = catchAsync(async (req: Request, res: Response) => {
@@ -98,10 +98,47 @@ const deleteBook = async (req: Request, res: Response) => {
   });
 };
 
+const postReview = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  const id = req.params.id;
+
+  //getting the main data from request body
+  const updatedData = req.body;
+
+  //updating data and getting rasult from service
+  const result = await bookService.postReview(id, updatedData);
+
+  //sending response
+  sendResponse<IReviews>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Book is updated successfully!',
+    data: result,
+  });
+});
+
+const getReviews = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  const id = req.params.id;
+
+  //getting single data by id from service
+  const result = await bookService.getReviews(id);
+
+  //sending response
+  sendResponse<IReviews>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Book is retrieved successfully!',
+    data: result,
+  });
+});
+
 export const bookController = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateBook,
   deleteBook,
+  postReview,
+  getReviews,
 };

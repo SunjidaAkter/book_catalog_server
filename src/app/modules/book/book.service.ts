@@ -8,6 +8,7 @@ import {
   IBook,
   IBookFilters,
   IGetResponseForBooks,
+  IReviews,
 } from '../book/book.interface';
 import { Book } from '../book/book.model';
 import { bookSearchableFields } from './book.constant';
@@ -99,12 +100,6 @@ const updateBook = async (
   id: string,
   payload: Partial<IBook>
 ): Promise<IBook | null> => {
-  const isExist = await Book.findOne({ _id: id });
-
-  //checking  if book is found
-  if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found!');
-  }
   //updating
   const result = await Book.findOneAndUpdate({ _id: id }, payload, {
     new: true,
@@ -119,10 +114,45 @@ const deleteBook = async (id: string): Promise<IBook | null> => {
   return result;
 };
 
+//creating function
+const postReview = async (
+  id: string,
+  payload: Partial<IBook>
+): Promise<IReviews | null> => {
+  const isExist = await Book.findOne({ _id: id });
+
+  //checking  if book is found
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found!');
+  }
+  await Book.findByIdAndUpdate(
+    { _id: id },
+    { $push: { reviews: { $each: payload.reviews } } },
+    { new: true }
+  );
+  const result = await Book.findById({ _id: id }, { reviews: 1 });
+  if (!result) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update review!'
+    );
+  }
+  return result;
+};
+
+//single data setting function
+const getReviews = async (id: string): Promise<IReviews | null> => {
+  //getting book by id
+  const result = await Book.findById({ _id: id }, { reviews: 1 });
+  return result;
+};
+
 export const bookService = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateBook,
   deleteBook,
+  postReview,
+  getReviews,
 };
