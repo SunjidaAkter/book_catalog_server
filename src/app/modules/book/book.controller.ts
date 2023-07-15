@@ -112,7 +112,7 @@ const postReview = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IReviews>(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Book is updated successfully!',
+    message: 'Review is updated successfully!',
     data: result,
   });
 });
@@ -128,7 +128,7 @@ const getReviews = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IReviews>(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Book is retrieved successfully!',
+    message: 'Reviews are retrieved successfully!',
     data: result,
   });
 });
