@@ -44,7 +44,16 @@ const getAllBooks = async (
         if (field == 'publicationYear') {
           return {
             $expr: {
-              $eq: [{ $substr: ['$publicationDate', 0, 4] }, value],
+              $eq: [
+                {
+                  $substrBytes: [
+                    '$publicationDate',
+                    { $subtract: [{ $strLenBytes: '$publicationDate' }, 4] },
+                    4,
+                  ],
+                },
+                value,
+              ],
             },
           };
         } else {
@@ -75,7 +84,7 @@ const getAllBooks = async (
     .limit(limit);
 
   //getting the total count of data
-  const total = await Book.countDocuments();
+  const total = await Book.countDocuments(whereCondition);
   return {
     meta: {
       page,
