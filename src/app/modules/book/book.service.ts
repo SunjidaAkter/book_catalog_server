@@ -41,13 +41,11 @@ const getAllBooks = async (
   if (Object.keys(filtersTerm).length) {
     andConditions.push({
       $and: Object.entries(filtersTerm).map(([field, value]) => {
-        if (field == 'maxPrice') {
+        if (field == 'publicationYear') {
           return {
-            $expr: { $lte: ['$' + 'price', value] },
-          };
-        } else if (field == 'minPrice') {
-          return {
-            $expr: { $gte: ['$' + 'price', value] },
+            $expr: {
+              $eq: [{ $substr: ['$publicationDate', 0, 4] }, value],
+            },
           };
         } else {
           return { [field]: value };
