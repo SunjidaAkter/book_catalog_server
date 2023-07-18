@@ -29,5 +29,7 @@ export type IBook = {
   genre: string;
   publicationDate: string;
   reviews?: string[] | null;
+  status?: boolean;
+  quantity?: number;
 };
 export type BookModel = Model<IBook, Record<string, unknown>>;

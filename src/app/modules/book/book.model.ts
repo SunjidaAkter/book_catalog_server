@@ -8,6 +8,8 @@ const bookSchema = new Schema<IBook, Record<string, unknown>>(
     genre: { type: String, required: true },
     publicationDate: { type: String, required: true },
     reviews: { type: [String], required: false },
+    status: { type: Boolean, required: false },
+    quantity: { type: Number, required: false },
   },
   {
     timestamps: true,

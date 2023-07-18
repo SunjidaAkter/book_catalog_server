@@ -12,7 +12,7 @@ router.post(
   validateRequest(bookValidation.createBookZodSchema),
   bookController.createBook
 );
-router.patch(
+router.post(
   '/reviews/:id',
   validateRequest(bookValidation.updateBookZodSchema),
   bookController.postReview
