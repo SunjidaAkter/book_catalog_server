@@ -19,6 +19,13 @@ const createBookZodSchema = zod_1.z.object({
             required_error: "Publication's date is required!",
         }),
         reviews: zod_1.z.array(zod_1.z.string()).optional(),
+        readList: zod_1.z.array(zod_1.z.string()).optional(),
+        readStatus: zod_1.z
+            .array(zod_1.z.object({ user: zod_1.z.string(), status: zod_1.z.boolean() }))
+            .optional(),
+        wishList: zod_1.z.array(zod_1.z.string()).optional(),
+        addedBy: zod_1.z.string().optional(),
+        status: zod_1.z.boolean().optional(),
     }),
 });
 //zod request validation for updating data
@@ -30,6 +37,13 @@ const updateBookZodSchema = zod_1.z.object({
         genre: zod_1.z.string().optional(),
         publicationDate: zod_1.z.string().optional(),
         reviews: zod_1.z.array(zod_1.z.string()).optional(),
+        addedBy: zod_1.z.string().optional(),
+        status: zod_1.z.boolean().optional(),
+        readList: zod_1.z.array(zod_1.z.string()).optional(),
+        readStatus: zod_1.z
+            .array(zod_1.z.object({ user: zod_1.z.string(), status: zod_1.z.boolean() }))
+            .optional(),
+        wishList: zod_1.z.array(zod_1.z.string()).optional(),
     }),
 });
 exports.bookValidation = {

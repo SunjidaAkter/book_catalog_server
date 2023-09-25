@@ -116,6 +116,78 @@ const postReview = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const postStatus = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  // const id = req.params.id;
+
+  //getting the main data from request body
+  const updatedData = req.body;
+
+  //updating data and getting rasult from service
+  const result = await bookService.postStatus(updatedData);
+
+  //sending response
+  sendResponse<IBook[]>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Read status's user is updated successfully!",
+    data: result,
+  });
+});
+const updateStatus = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  const id = req.params.id;
+
+  //getting the main data from request body
+  const updatedData = req.body;
+
+  //updating data and getting rasult from service
+  const result = await bookService.updateStatus(id, updatedData);
+
+  //sending response
+  sendResponse<IBook>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Read status is updated successfully!',
+    data: result,
+  });
+});
+const postRead = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  const id = req.params.id;
+
+  //getting the main data from request body
+  const updatedData = req.body;
+
+  //updating data and getting rasult from service
+  const result = await bookService.postRead(id, updatedData);
+
+  //sending response
+  sendResponse<IBook>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Read list is updated successfully!',
+    data: result,
+  });
+});
+const postWish = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  const id = req.params.id;
+
+  //getting the main data from request body
+  const updatedData = req.body;
+
+  //updating data and getting rasult from service
+  const result = await bookService.postWish(id, updatedData);
+
+  //sending response
+  sendResponse<IBook>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Wish list is updated successfully!',
+    data: result,
+  });
+});
 
 const getReviews = catchAsync(async (req: Request, res: Response) => {
   //taking id from params
@@ -132,13 +204,33 @@ const getReviews = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getList = catchAsync(async (req: Request, res: Response) => {
+  //taking id from params
+  // const id = req.params.id;
+
+  //getting single data by id from service
+  const result = await bookService.getList();
+
+  //sending response
+  sendResponse<IBook[]>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Reviews are retrieved successfully!',
+    data: result,
+  });
+});
 
 export const bookController = {
   createBook,
   getAllBooks,
+  getList,
   getSingleBook,
   updateBook,
   deleteBook,
   postReview,
+  postStatus,
+  postRead,
+  postWish,
   getReviews,
+  updateStatus,
 };

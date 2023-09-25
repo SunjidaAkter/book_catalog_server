@@ -42,22 +42,27 @@ const getAllBooks = async (
     andConditions.push({
       $and: Object.entries(filtersTerm).map(([field, value]) => {
         if (field == 'publicationYear') {
-          return {
-            $expr: {
-              $eq: [
-                {
-                  $substrBytes: [
-                    '$publicationDate',
-                    { $subtract: [{ $strLenBytes: '$publicationDate' }, 4] },
-                    4,
-                  ],
-                },
-                value,
-              ],
-            },
-          };
+          if (value === '' && field === 'publicationYear') {
+            return { [field]: { $ne: '' } };
+          } else
+            return {
+              $expr: {
+                $eq: [
+                  {
+                    $substrBytes: [
+                      '$publicationDate',
+                      { $subtract: [{ $strLenBytes: '$publicationDate' }, 4] },
+                      4,
+                    ],
+                  },
+                  value,
+                ],
+              },
+            };
         } else {
-          return { [field]: value };
+          if (value === '') {
+            return { [field]: { $ne: '' } };
+          } else return { [field]: value };
         }
       }),
     });
@@ -146,6 +151,110 @@ const postReview = async (
   }
   return result;
 };
+//creating function
+const postStatus = async (payload: Partial<IBook>): Promise<IBook[] | null> => {
+  const updatedBooks = await Book.updateMany(
+    {},
+    { $push: { readStatus: { $each: payload.readStatus } } },
+    { new: true }
+  );
+
+  if (!updatedBooks) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update status!'
+    );
+  }
+  const result = await Book.find();
+  if (!result) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update review!'
+    );
+  }
+  return result;
+};
+const updateStatus = async (
+  id: string,
+  payload: Partial<IBook>
+): Promise<IBook | null> => {
+  const isExist = await Book.findOne({ _id: id });
+
+  //checking  if book is found
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found!');
+  }
+  const userEmail = payload?.readStatus?.[0]?.user;
+  if (!userEmail) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
+  }
+  const userStatus = payload?.readStatus?.[0]?.status;
+  // console.log(userStatus);
+  await Book.updateOne(
+    { _id: id, readStatus: { $elemMatch: { user: userEmail } } },
+    { $set: { 'readStatus.$.status': !userStatus } },
+    { new: true }
+  );
+
+  const result = await Book.findById({ _id: id });
+  if (!result) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update review!'
+    );
+  }
+  return result;
+};
+//creating function
+const postRead = async (
+  id: string,
+  payload: Partial<IBook>
+): Promise<IBook | null> => {
+  const isExist = await Book.findOne({ _id: id });
+
+  //checking  if book is found
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found!');
+  }
+  await Book.findByIdAndUpdate(
+    { _id: id },
+    { $addToSet: { readList: { $each: payload.readList } } },
+    { new: true }
+  );
+  const result = await Book.findById({ _id: id });
+  if (!result) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update review!'
+    );
+  }
+  return result;
+};
+//creating function
+const postWish = async (
+  id: string,
+  payload: Partial<IBook>
+): Promise<IBook | null> => {
+  const isExist = await Book.findOne({ _id: id });
+
+  //checking  if book is found
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found!');
+  }
+  await Book.findByIdAndUpdate(
+    { _id: id },
+    { $addToSet: { wishList: { $each: payload.wishList } } },
+    { new: true }
+  );
+  const result = await Book.findById({ _id: id });
+  if (!result) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update review!'
+    );
+  }
+  return result;
+};
 
 //single data setting function
 const getReviews = async (id: string): Promise<IReviews | null> => {
@@ -153,13 +262,23 @@ const getReviews = async (id: string): Promise<IReviews | null> => {
   const result = await Book.findById({ _id: id }, { reviews: 1 });
   return result;
 };
+const getList = async (): Promise<IBook[] | null> => {
+  //getting book by id
+  const result = await Book.find();
+  return result;
+};
 
 export const bookService = {
   createBook,
   getAllBooks,
+  getList,
   getSingleBook,
   updateBook,
   deleteBook,
   postReview,
+  postStatus,
+  updateStatus,
+  postRead,
+  postWish,
   getReviews,
 };

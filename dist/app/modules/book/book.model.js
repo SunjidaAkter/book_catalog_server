@@ -8,6 +8,13 @@ const bookSchema = new mongoose_1.Schema({
     genre: { type: String, required: true },
     publicationDate: { type: String, required: true },
     reviews: { type: [String], required: false },
+    readList: { type: [String], required: false },
+    wishList: { type: [String], required: false },
+    readStatus: {
+        type: [{ user: { type: String }, status: { type: Boolean } }],
+        required: false,
+    },
+    addedBy: { type: String, required: false },
 }, {
     timestamps: true,
     toJSON: {

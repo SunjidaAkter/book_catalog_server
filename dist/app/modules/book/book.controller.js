@@ -116,6 +116,66 @@ const postReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const postStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //taking id from params
+    // const id = req.params.id;
+    //getting the main data from request body
+    const updatedData = req.body;
+    //updating data and getting rasult from service
+    const result = yield book_service_1.bookService.postStatus(updatedData);
+    //sending response
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Read status's user is updated successfully!",
+        data: result,
+    });
+}));
+const updateStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //taking id from params
+    const id = req.params.id;
+    //getting the main data from request body
+    const updatedData = req.body;
+    //updating data and getting rasult from service
+    const result = yield book_service_1.bookService.updateStatus(id, updatedData);
+    //sending response
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Read status is updated successfully!',
+        data: result,
+    });
+}));
+const postRead = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //taking id from params
+    const id = req.params.id;
+    //getting the main data from request body
+    const updatedData = req.body;
+    //updating data and getting rasult from service
+    const result = yield book_service_1.bookService.postRead(id, updatedData);
+    //sending response
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Read list is updated successfully!',
+        data: result,
+    });
+}));
+const postWish = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //taking id from params
+    const id = req.params.id;
+    //getting the main data from request body
+    const updatedData = req.body;
+    //updating data and getting rasult from service
+    const result = yield book_service_1.bookService.postWish(id, updatedData);
+    //sending response
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Wish list is updated successfully!',
+        data: result,
+    });
+}));
 const getReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //taking id from params
     const id = req.params.id;
@@ -129,12 +189,30 @@ const getReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getList = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //taking id from params
+    // const id = req.params.id;
+    //getting single data by id from service
+    const result = yield book_service_1.bookService.getList();
+    //sending response
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Reviews are retrieved successfully!',
+        data: result,
+    });
+}));
 exports.bookController = {
     createBook,
     getAllBooks,
+    getList,
     getSingleBook,
     updateBook,
     deleteBook,
     postReview,
+    postStatus,
+    postRead,
+    postWish,
     getReviews,
+    updateStatus,
 };

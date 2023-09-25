@@ -12,9 +12,14 @@ const book_controller_1 = require("./book.controller");
 const router = express_1.default.Router();
 //creating route
 router.post('/', (0, validateRequest_1.default)(book_validation_1.bookValidation.createBookZodSchema), book_controller_1.bookController.createBook);
+router.post('/read-status', (0, validateRequest_1.default)(book_validation_1.bookValidation.updateBookZodSchema), book_controller_1.bookController.postStatus);
+router.post('/read-list/:id', (0, validateRequest_1.default)(book_validation_1.bookValidation.updateBookZodSchema), book_controller_1.bookController.postRead);
+router.post('/wish-list/:id', (0, validateRequest_1.default)(book_validation_1.bookValidation.updateBookZodSchema), book_controller_1.bookController.postWish);
+router.patch('/read-status/:id', (0, validateRequest_1.default)(book_validation_1.bookValidation.updateBookZodSchema), book_controller_1.bookController.updateStatus);
 router.post('/reviews/:id', (0, validateRequest_1.default)(book_validation_1.bookValidation.updateBookZodSchema), book_controller_1.bookController.postReview);
 //getting single data route
 router.get('/reviews/:id', book_controller_1.bookController.getReviews);
+router.get('/list', book_controller_1.bookController.getList);
 //getting single data route
 router.get('/:id', book_controller_1.bookController.getSingleBook);
 //getting all data routes

@@ -22,6 +22,11 @@ export type IGetResponseForBooks<T> = {
   data: T;
 };
 
+export type IStatus = {
+  user: string;
+  status: boolean;
+};
+
 //main
 export type IBook = {
   title: string;
@@ -29,7 +34,9 @@ export type IBook = {
   genre: string;
   publicationDate: string;
   reviews?: string[] | null;
-  status?: boolean;
-  quantity?: number;
+  readStatus?: IStatus[] | null;
+  readList?: string[] | null;
+  wishList?: string[] | null;
+  addedBy?: string;
 };
 export type BookModel = Model<IBook, Record<string, unknown>>;

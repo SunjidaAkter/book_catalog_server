@@ -17,6 +17,13 @@ const createBookZodSchema = z.object({
       required_error: "Publication's date is required!",
     }),
     reviews: z.array(z.string()).optional(),
+    readList: z.array(z.string()).optional(),
+    readStatus: z
+      .array(z.object({ user: z.string(), status: z.boolean() }))
+      .optional(),
+    wishList: z.array(z.string()).optional(),
+    addedBy: z.string().optional(),
+    status: z.boolean().optional(),
   }),
 });
 
@@ -29,6 +36,13 @@ const updateBookZodSchema = z.object({
     genre: z.string().optional(),
     publicationDate: z.string().optional(),
     reviews: z.array(z.string()).optional(),
+    addedBy: z.string().optional(),
+    status: z.boolean().optional(),
+    readList: z.array(z.string()).optional(),
+    readStatus: z
+      .array(z.object({ user: z.string(), status: z.boolean() }))
+      .optional(),
+    wishList: z.array(z.string()).optional(),
   }),
 });
 

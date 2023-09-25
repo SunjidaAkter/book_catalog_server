@@ -52,23 +52,31 @@ const getAllBooks = (fliteringOptions, paginationOptions) => __awaiter(void 0, v
         andConditions.push({
             $and: Object.entries(filtersTerm).map(([field, value]) => {
                 if (field == 'publicationYear') {
-                    return {
-                        $expr: {
-                            $eq: [
-                                {
-                                    $substrBytes: [
-                                        '$publicationDate',
-                                        { $subtract: [{ $strLenBytes: '$publicationDate' }, 4] },
-                                        4,
-                                    ],
-                                },
-                                value,
-                            ],
-                        },
-                    };
+                    if (value === '' && field === 'publicationYear') {
+                        return { [field]: { $ne: '' } };
+                    }
+                    else
+                        return {
+                            $expr: {
+                                $eq: [
+                                    {
+                                        $substrBytes: [
+                                            '$publicationDate',
+                                            { $subtract: [{ $strLenBytes: '$publicationDate' }, 4] },
+                                            4,
+                                        ],
+                                    },
+                                    value,
+                                ],
+                            },
+                        };
                 }
                 else {
-                    return { [field]: value };
+                    if (value === '') {
+                        return { [field]: { $ne: '' } };
+                    }
+                    else
+                        return { [field]: value };
                 }
             }),
         });
@@ -132,18 +140,88 @@ const postReview = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     }
     return result;
 });
+//creating function
+const postStatus = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedBooks = yield book_model_1.Book.updateMany({}, { $push: { readStatus: { $each: payload.readStatus } } }, { new: true });
+    if (!updatedBooks) {
+        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to update status!');
+    }
+    const result = yield book_model_1.Book.find();
+    if (!result) {
+        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to update review!');
+    }
+    return result;
+});
+const updateStatus = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    const isExist = yield book_model_1.Book.findOne({ _id: id });
+    //checking  if book is found
+    if (!isExist) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book Not Found!');
+    }
+    const userEmail = (_b = (_a = payload === null || payload === void 0 ? void 0 : payload.readStatus) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.user;
+    if (!userEmail) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'User not found!');
+    }
+    const userStatus = (_d = (_c = payload === null || payload === void 0 ? void 0 : payload.readStatus) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.status;
+    // console.log(userStatus);
+    yield book_model_1.Book.updateOne({ _id: id, readStatus: { $elemMatch: { user: userEmail } } }, { $set: { 'readStatus.$.status': !userStatus } }, { new: true });
+    const result = yield book_model_1.Book.findById({ _id: id });
+    if (!result) {
+        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to update review!');
+    }
+    return result;
+});
+//creating function
+const postRead = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield book_model_1.Book.findOne({ _id: id });
+    //checking  if book is found
+    if (!isExist) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book Not Found!');
+    }
+    yield book_model_1.Book.findByIdAndUpdate({ _id: id }, { $addToSet: { readList: { $each: payload.readList } } }, { new: true });
+    const result = yield book_model_1.Book.findById({ _id: id });
+    if (!result) {
+        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to update review!');
+    }
+    return result;
+});
+//creating function
+const postWish = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield book_model_1.Book.findOne({ _id: id });
+    //checking  if book is found
+    if (!isExist) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book Not Found!');
+    }
+    yield book_model_1.Book.findByIdAndUpdate({ _id: id }, { $addToSet: { wishList: { $each: payload.wishList } } }, { new: true });
+    const result = yield book_model_1.Book.findById({ _id: id });
+    if (!result) {
+        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to update review!');
+    }
+    return result;
+});
 //single data setting function
 const getReviews = (id) => __awaiter(void 0, void 0, void 0, function* () {
     //getting book by id
     const result = yield book_model_1.Book.findById({ _id: id }, { reviews: 1 });
     return result;
 });
+const getList = () => __awaiter(void 0, void 0, void 0, function* () {
+    //getting book by id
+    const result = yield book_model_1.Book.find();
+    return result;
+});
 exports.bookService = {
     createBook,
     getAllBooks,
+    getList,
     getSingleBook,
     updateBook,
     deleteBook,
     postReview,
+    postStatus,
+    updateStatus,
+    postRead,
+    postWish,
     getReviews,
 };

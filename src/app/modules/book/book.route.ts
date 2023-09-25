@@ -13,6 +13,26 @@ router.post(
   bookController.createBook
 );
 router.post(
+  '/read-status',
+  validateRequest(bookValidation.updateBookZodSchema),
+  bookController.postStatus
+);
+router.post(
+  '/read-list/:id',
+  validateRequest(bookValidation.updateBookZodSchema),
+  bookController.postRead
+);
+router.post(
+  '/wish-list/:id',
+  validateRequest(bookValidation.updateBookZodSchema),
+  bookController.postWish
+);
+router.patch(
+  '/read-status/:id',
+  validateRequest(bookValidation.updateBookZodSchema),
+  bookController.updateStatus
+);
+router.post(
   '/reviews/:id',
   validateRequest(bookValidation.updateBookZodSchema),
   bookController.postReview
@@ -21,6 +41,7 @@ router.post(
 //getting single data route
 router.get('/reviews/:id', bookController.getReviews);
 
+router.get('/list', bookController.getList);
 //getting single data route
 router.get('/:id', bookController.getSingleBook);
 
